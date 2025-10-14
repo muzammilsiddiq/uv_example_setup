@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    command: ["/app/.venv/bin/serve", "--host", "0.0.0.0", "--port", "8000"]
+    develop:
+      watch:
+        # Rebuild the image when dependencies or lockfile change
+        - action: rebuild
+          path: ./pyproject.toml
+        - action: rebuild
+          path: ./uv.lock
+        # Rebuild on source changes (non-editable install in image)
+        - action: rebuild
+          path: ./src
+
