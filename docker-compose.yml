@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./example_fastapi
+    container_name: backend-container
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./streamlit_frontend
+    container_name: frontend-container
+    ports:
+      - "8501:8501"
+    environment:
+      # Containers on the same Compose network reach each other by service name,
+      # not by localhost.
+      - APP_BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
